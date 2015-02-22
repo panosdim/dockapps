@@ -12,6 +12,8 @@
 	---
 	CHANGES:
 	---
+	10/10/2003 (Simon Law, sfllaw@debian.org)
+		* changed the parse_rcfile function to use getline instead of fgets.
 	14/09/1998 (Dave Clark, clarkd@skyia.com)
 		* Updated createXBMfromXPM routine
 		* Now supports >256 colors
@@ -38,6 +40,7 @@
 
 */
 
+#define _GNU_SOURCE
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -134,7 +137,8 @@ void parse_rcfile(const char *filename, rckeys *keys) {
 void parse_rcfile2(const char *filename, rckeys2 *keys) {
 
 	char	*p;
-	char	temp[128];
+	char	*line = NULL;
+	size_t  line_size = 0;
 	char	*tokens = " :\t\n";
 	FILE	*fp;
 	int		i,key;
@@ -142,10 +146,10 @@ void parse_rcfile2(const char *filename, rckeys2 *keys) {
 
 	fp = fopen(filename, "r");
 	if (fp) {
-		while (fgets(temp, 128, fp)) {
+		while (getline(&line, &line_size, fp) >= 0) {
 			key = 0;
 			while (key >= 0 && keys[key].label) {
-				if ((p = strstr(temp, keys[key].label))) {
+				if ((p = strstr(line, keys[key].label))) {
 					p += strlen(keys[key].label);
 					p += strspn(p, tokens);
 					if ((i = strcspn(p, "#\n"))) p[i] = 0;
@@ -383,14 +387,10 @@ void openXwindow(int argc, char *argv[], char *pixmap_bytes[], char *pixmask_bit
 	int				i, wx, wy;
 
 	for (i=1; argv[i]; i++) {
-		if (!strcmp(argv[i], "-display")) {
-			display_name = argv[i+1];
-			i++;
-		}
-		if (!strcmp(argv[i], "-geometry")) {
-			geometry = argv[i+1];
-			i++;
-		}
+		if (!strcmp(argv[i], "-display"))
+			display_name = argv[++i];
+		else if (!strcmp(argv[i], "-geometry"))
+			geometry = argv[++i];
 	}
 
 	if (!(display = XOpenDisplay(display_name))) {
@@ -415,7 +415,11 @@ void openXwindow(int argc, char *argv[], char *pixmap_bytes[], char *pixmask_bit
 	fore_pix = GetColor("black");
 
 	XWMGeometry(display, screen, Geometry, NULL, borderwidth, &mysizehints,
-				&mysizehints.x, &mysizehints.y,&mysizehints.width,&mysizehints.height, &dummy);
+	            &mysizehints.x, &mysizehints.y,
+	            &mysizehints.width, &mysizehints.height, &dummy);
+	if (geometry)
+		XParseGeometry(geometry, &mysizehints.x, &mysizehints.y,
+		               (unsigned int *) &mysizehints.width, (unsigned int *) &mysizehints.height);
 
 	mysizehints.width = 64;
 	mysizehints.height = 64;
@@ -479,3 +483,6 @@ void openXwindow(int argc, char *argv[], char *pixmap_bytes[], char *pixmask_bit
 		XMoveWindow(display, win, wx, wy);
 	}
 }
+
+/* vim: sw=4 ts=4 columns=82
+ */
