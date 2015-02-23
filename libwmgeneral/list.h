@@ -3,6 +3,9 @@
 
 Author: Kresten Krab Thorup
 
+Many modifications by Alfredo K. Kojima
+
+
 This file is part of GNU CC.
 
 GNU CC is free software; you can redistribute it and/or modify
@@ -40,20 +43,50 @@ typedef struct LinkedList {
   struct LinkedList *tail;
 } LinkedList;
 
-INLINE LinkedList* list_cons(void* head, LinkedList* tail);
+/* Return a cons cell produced from (head . tail) */
 
-INLINE int list_length(LinkedList* list);
+INLINE LinkedList*
+list_cons(void* head, LinkedList* tail)
+{
+  LinkedList* cell;
 
-INLINE void* list_nth(int index, LinkedList* list);
+  cell = (LinkedList*)malloc(sizeof(LinkedList));
+  cell->head = head;
+  cell->tail = tail;
+  return cell;
+}
 
-INLINE void list_remove_head(LinkedList** list);
+/* Return the length of a list, list_length(NULL) returns zero */
 
-INLINE LinkedList *list_remove_elem(LinkedList* list, void* elem);
+INLINE int
+list_length(LinkedList* list)
+{
+  int i = 0;
+  while(list)
+    {
+      i += 1;
+      list = list->tail;
+    }
+  return i;
+}
 
-INLINE void list_mapcar(LinkedList* list, void(*function)(void*));
+/* Remove the element at the head by replacing it by its successor */
 
-INLINE LinkedList*list_find(LinkedList* list, void* elem);
-
-INLINE void list_free(LinkedList* list);
+INLINE void
+list_remove_head(LinkedList** list)
+{
+  if (!*list) return;
+  if ((*list)->tail)
+    {
+      LinkedList* tail = (*list)->tail; /* fetch next */
+      *(*list) = *tail;		/* copy next to list head */
+      free(tail);			/* free next */
+    }
+  else				/* only one element in list */
+    {
+      free(*list);
+      (*list) = 0;
+    }
+}
 
 #endif
