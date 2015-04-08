@@ -1,0 +1,122 @@
+wmmount - The Window Maker universal mount point
+
+17/06/99  Release 1.0 beta2
+Copyright (C) 1999  Sam Hawker <shawkie@geocities.com>
+This software comes with ABSOLUTELY NO WARRANTY
+This software is free software, and you are welcome to redistribute it
+under certain conditions
+See the COPYING file for details.
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+
+THE AUTHOR:
+===========
+
+Sam Hawker <shawkie@geocities.com>
+http://www.geocities.com/SiliconValley/Vista/2471/index.html
+
+
+INSTALLING:
+===========
+
+xmkmf
+make
+strip wmmount
+make install
+
+mkdir /usr/X11R6/lib/X11/wmmount
+cp lib/* /usr/X11R6/lib/X11/wmmount
+
+
+DOCKAPP:
+========
+
+Dock applet functions for wmmount are now provided by the dockapp source
+module. For information relating to these functions (eg. docking under Window
+Maker) see the DOCKAPP file.
+
+
+CONFIGURATION:
+==============
+
+The system-wide configuration file can now be generated automatically from
+/etc/fstab by means of the system.wmmount.sh script. It requires awk (or gawk)
+and can be found in the config directory.
+
+./system.wmmount.sh >system.wmmount
+cp system.wmmount /usr/X11R6/lib/X11/wmmount
+
+Individual users can create their own configuration files, saving them as
+~/.wmmount.
+
+
+NOTE:
+=====
+
+Do not give wmmount suid or sgid permissions.
+
+Proper use of fstab is all that is required (at least on Linux).
+
+
+USAGE:
+======
+
+Press the "<" and ">" arrow buttons to select a mount point.
+
+Press the mount button (the one with a bolt symbol) to mount or unmount.
+
+Double-click in the information box to open a program (eg. Midnight Commander)
+at the mount point.
+
+
+THANKS:
+=======
+
+Thanks to the following people (and others):
+
+   aseltine@cs.umass.edu
+   steeve@minet.net
+   devernay@istar.fr
+   warp@xs4all.nl
+   ssadiqr@pheonix.Princeton.EDU
+   dalroi@wit401310.student.utwente.nl
+   unit@lgcy.com
+   rolfwr@ii.uib.no
+
+
+CHANGES:
+========
+
+Release 0.1         25/01/98   First release.
+
+Release 0.2         31/01/98
+
+Release 0.3         04/02/98
+
+Release 0.4         24/02/98
+
+Release 0.5         04/03/98
+
+Release 0.6         12/03/98
+
+Release 0.7         25/04/98
+
+Release 0.8         07/05/98
+
+Release 1.0 beta1   05/09/98
+
+Release 1.0 beta2   17/06/99   Major rewrite including switch to plain C and a
+                                  separate dockapp source module.

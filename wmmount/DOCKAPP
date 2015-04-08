@@ -1,0 +1,118 @@
+dockapp - Provides Window Maker dock applet functions
+
+17/06/99  Release 1.0 beta1
+Copyright (C) 1999  Sam Hawker <shawkie@geocities.com>
+This software comes with ABSOLUTELY NO WARRANTY
+This software is free software, and you are welcome to redistribute it
+under certain conditions
+See the COPYING file for details.
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+
+THE AUTHOR:
+===========
+
+Sam Hawker <shawkie@geocities.com>
+http://www.geocities.com/SiliconValley/Vista/2471/index.html
+
+
+DOCKAPP:
+========
+
+This source module provides a set of common functions for use by dock applets.
+
+The user interface to this set of functions is a set of command-line options
+common to all dock applets. These dockapp options provide functions such as
+docking, positioning and setting of colors.
+
+usage:
+
+   dockapp [options] [-- dockapp_options]
+
+examples:
+
+   dockapp -h
+
+   dockapp -- -h
+
+These examples will obtain different help messages. Try both before asking for
+help.
+
+
+WINDOWMAKER USERS:
+==================
+
+To dock a dock applet under Window Maker, use the '-w' dockapp option.
+
+example:
+
+   dockapp -- -w
+
+
+AFTERSTEP USERS:
+================
+(thanks to tygris@erols.com)
+
+To dock a dock applet in the AfterStep Wharf, use the '-a' dockapp option.
+
+example:
+
+   dockapp -- -a
+
+There is also a '--position position' dockapp option which allows you to push
+the dock applet off the edge of the screen while it gets swallowed.
+
+example:
+
+   dockapp -- -a --position -0-0
+
+You will, of course, also need a line in AfterStep's .steprc file.
+
+example:
+
+   *Wharf dockapp nil MaxSwallow "dockapp" dockapp -- -a --position -0-0 &
+
+The '-a' causes the dock applet to use a 56x56 pixel window. Since the Wharf
+would usually prefer 55x57 pixel windows, some editing and recompiling of the
+AfterStep sources is necessary for perfect results.
+
+According to tygris@rols.com,
+
+"Locate Wharf.c (or is it Wharf.cc?)  Should be in
+AfterStep-1.0/modules/Wharf.  Locate this:
+
+            if (Buttons[button].maxsize) {
+              Buttons[button].icons[0].w = 55;
+              Buttons[button].icons[0].h = 57;
+            }
+
+and change the 55 and 57 to 56's.  Save and compile."
+
+
+DEFINES:
+========
+
+A number of defines are included in dockapp.h, strategic use of which should
+allow you to reduce the number of options you specify on the command-line.
+
+Note that the '-w', '-s' and '-a' options are toggles. This allows them to be
+set by default in dockapp.h but then unset by their use on the command-line.
+
+
+RELEASE HISTORY:
+================
+
+Release 1.0 beta1   17/06/99    First release.

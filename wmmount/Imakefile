@@ -1,0 +1,9 @@
+DEPLIBS = $(DEPXLIB)
+XPMLIB = -lXpm
+
+LOCAL_LIBRARIES = $(XPMLIB) $(XLIB)
+
+SRCS = dockapp.c wmmount.c
+OBJS = dockapp.o wmmount.o
+
+ComplexProgramTarget(wmmount)
