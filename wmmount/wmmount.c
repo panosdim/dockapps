@@ -601,6 +601,10 @@ void font_init() {
   if(font==NULL)
     font=NAMEFONT;
   xfs=XLoadQueryFont(dockapp_d, font);
+  if(xfs==NULL) {
+    fprintf(stderr, "wmmount: font %s not found\n", font);
+    exit(1);
+  }
 
   f_name=xfs->fid;
   namex=6-xfs->min_bounds.lbearing;
@@ -613,6 +617,10 @@ void font_init() {
   if(font==NULL)
     font=USAGEFONT;
   xfs=XLoadQueryFont(dockapp_d, USAGEFONT);
+  if(xfs==NULL) {
+    fprintf(stderr, "wmmount: font %s not found\n", font);
+    exit(1);
+  }
   
   f_usage=xfs->fid;
   usagex=6-xfs->min_bounds.lbearing;
