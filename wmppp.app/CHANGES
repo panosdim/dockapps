@@ -1,5 +1,98 @@
 Version         Description
 --------------------------------------------------------------
+1.3.1   * Released 150410
+
+	* Now maintained by Window Maker Developers Team
+	  <wmaker-dev@lists.windowmaker.org>.
+
+	* Update Free Software Foundation address and GPL2 text
+	  in COPYING.
+
+	* Remove getmodemspeed binary from source.
+
+	* Remove trailing whitespace.
+
+	* Add manpage (obtained from Debian package).
+
+	* Rename system wide fixed options configuration file
+	  for consistency.
+
+	* Allow ISDN devices.
+	  Users of ISDN dialup lines (such as me) cannot use
+	  wmppp as shipped, because it rejects to use any
+	  device except those beginning with `ppp'.
+	  The patch attached solves this.
+	  Based on the patch by Juan Cespedes <cespedes@debian.org>.
+	  See https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=97509.
+
+	* Stampfile handling.
+	  This patch adds support for "stampfile" in config
+	  file, as described in manual page.
+	  Based on the patch by Juan Cespedes <cespedes@debian.org>.
+	  See https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=97509.
+
+	* Display speed in K when too high.
+          When the download speed is too high, wmppp can't
+	  display it because it has only 5 digit. The most
+	  significant digits are hidden !
+	  This small patch display the speed in K when it is
+	  too high.
+	  Based on the patch by jguiton <jguiton@free.fr>. See
+	  https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=328699.
+
+	* Use rm -f for make clean
+	  This patch prevents "make clean" from failing when
+	  the source tree is already clean.
+
+	* Use build flags.
+	  Compile with CPPFLAGS and LDFLAGS and do not
+	  overwrite CFLAGS.
+	  This enables the Debian package to be built with
+	  hardening options.
+	  See https://wiki.debian.org/Hardening.
+
+	* Update to latest version of wmgeneral library.
+
+	* Move source files to top directory.
+	  This way, users need only type "make" to build
+	  instead of needing to "cd wmppp" first.
+
+	* Fix spelling mistakes.
+	  Used codespell -w.
+
+	* Reduce scope of several variables.
+	  Fixes several "(style) The scope of the variable 'p'
+	  can be reduced" found by cppcheck.
+
+	* Switch ifs to #ifs for macros.
+	  Fixes "warning: null argument where non-null
+	  required" compiler warnings by not passing NULL to
+	  strdup and "(warning) Conversion of string literal
+	  to bool always evaluates to true" found by cppcheck.
+
+	* Remove unused parameter from get_statistics().
+	  Fixes "warning: unused parameter ‘devname’" compiler
+	  warning.
+
+	* Replace deprecated caddr_t cast with void*.
+
+	* Replace deprecated usleep with nanosleep.
+
+	* Remove C++ style comments.
+
+	* Use #includes from include-what-you-use.
+	  We actually include <sys/socket.h> instead of
+	  <bits/socket_type.h>, as it returns an error: "Never
+	  include <bits/socket_type.h> directly; use
+	  <sys/socket.h> instead."
+
+	* Update Makefile.  Main change is to use $(INSTALL)
+	  instead of cp in install target along with $(DESTDIR)
+	  variable.  We also remove installation of user
+	  ~/.wmppprc config file -- this isn't useful for
+	  sysadmins or package maintainers.
+	  We also update INSTALL to reflect the changes.
+
 1.3.0	* Released 980916
 
 	* WMPPP is almost completely rewritten, WMPPP is now
