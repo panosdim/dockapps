@@ -166,6 +166,7 @@
 #include <stdlib.h>                    /* for exit, atoi, getenv, etc */
 #include <string.h>                    /* for strcpy, memset, strcmp, etc */
 #include <sys/ioctl.h>                 /* for ioctl */
+#include <sys/inotify.h>
 #include <sys/socket.h>                /* for socket, AF_INET */
 #include <sys/stat.h>                  /* for stat, st_mtime */
 #include <sys/types.h>                 /* for pid_t */
@@ -226,6 +227,7 @@ int wmppp_mask_width = 64;
 int wmppp_mask_height = 64;
 char wmppp_mask_bits[64*64];
 
+char *user_conffile;
 
   /*****************/
  /* PPP variables */
@@ -262,7 +264,7 @@ void ButtonDown(int);
 int get_statistics(long *, long *, long *, long *);
 void get_ppp_stats(struct ppp_stats *cur);
 int stillonline(char *);
-void reread(int);
+void reread(void);
 
 char	*start_action = NULL;
 char	*stop_action = NULL;
@@ -357,8 +359,7 @@ int parse_cmdline(int argc, char *argv[]) {
  /* reread */
 /**********/
 
-void reread(int signal) {
-	char			*p;
+void reread(void) {
 	char			temp[128];
 
 	rckeys wmppp_keys[] = {
@@ -373,15 +374,7 @@ void reread(int signal) {
 	strcpy(temp, "/etc/wmppprc");
 	parse_rcfile(temp, wmppp_keys);
 
-	p = getenv("HOME");
-	if (p == NULL) {
-		fprintf(stderr,
-			"error: HOME environment variable not defined\n");
-		exit(EXIT_FAILURE);
-	}
-	strcpy(temp, p);
-	strcat(temp, "/.wmppprc");
-	parse_rcfile(temp, wmppp_keys);
+	parse_rcfile(user_conffile, wmppp_keys);
 
 	strcpy(temp, "/etc/wmppprc.fixed");
 	parse_rcfile(temp, wmppp_keys);
@@ -418,8 +411,11 @@ int main(int argc, char **argv) {
 	XEvent			Event;
 
 	char			temp[128];
+	char *p;
 
 	int				speed_ind=60;
+
+	int fd, wd;
 
 	/* Initialize some stuff */
 
@@ -443,9 +439,36 @@ int main(int argc, char **argv) {
            stamp_file = strdup (temp);
 	#endif
 
-	reread(0);
+	p = getenv("HOME");
+	if (p == NULL) {
+		fprintf(stderr,
+			"error: HOME environment variable not defined\n");
+		exit(EXIT_FAILURE);
+	}
+	user_conffile = strdup(p);
+	strcat(user_conffile, "/.wmppprc");
+
+	reread();
 	parse_cmdline(argc, argv);
-	signal(SIGHUP, reread);
+
+	fd = inotify_init();
+	if (fd == -1)
+		perror(NULL);
+
+	/* wd = inotify_add_watch(fd, "/etc/wmppprc",
+	 * 			      IN_CREATE | IN_DELETE | IN_MODIFY);
+	 * if (wd == -1)
+	 * 	perror(NULL); */
+
+	wd = inotify_add_watch(fd, user_conffile,
+				      IN_CREATE | IN_DELETE | IN_MODIFY);
+	if (wd == -1)
+		perror(NULL);
+
+	/* wd = inotify_add_watch(fd, "/etc/wmppprc.fixed",
+	 * 			      IN_CREATE | IN_DELETE | IN_MODIFY);
+	 * if (wd == -1)
+	 * 	perror(NULL); */
 
 	/* Open the display */
 
@@ -470,6 +493,13 @@ int main(int argc, char **argv) {
 		int i;
 		long lasttime;
 		struct timespec ts;
+		struct inotify_event* event;
+
+		int foo;
+		foo = read(fd, event, sizeof(event));
+		printf("%d\n", foo);
+
+
 
 		lasttime = currenttime;
 		currenttime = time(0);
@@ -648,8 +678,6 @@ int main(int argc, char **argv) {
 					switch (i) {
 					case 0:
 						if (!starttime) {
-							/* Reread the rcfiles. */
-							reread(0);
 							copyXPMArea(28, 95, 25, 11, 5, 48);
 							DrawTime(0, 1);
 							if (start_action)
@@ -678,6 +706,7 @@ int main(int argc, char **argv) {
 		ts.tv_sec = 0;
 		ts.tv_nsec = 50000000L;
 		nanosleep(&ts, NULL);
+
 	}
 	return 0;
 }
