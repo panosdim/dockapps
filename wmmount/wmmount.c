@@ -871,7 +871,9 @@ void execcmd(char *cmd, char *path) {
   if(pid==0) {
     if(path!=NULL)
       chdir(path);
-    execv(argv[0], argv);
+    if(execvp(argv[0], argv) == -1) {
+      perror(argv[0]);
+    }
     free(argv);
     free(buf);
     exit(127);
