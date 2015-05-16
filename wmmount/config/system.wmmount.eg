@@ -52,7 +52,7 @@ icon /usr/X11R6/lib/X11/wmmount/harddisk.xpm
 #usagedisplay=1
 #mountcmd=/bin/mount %m
 #umountcmd=/bin/umount %m
-#opencmd=kfmclient exec %m 
+#opencmd=kfmclient exec %m
 
 # name, iconnumber and usagedisplay are required.
 

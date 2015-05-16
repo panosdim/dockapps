@@ -162,7 +162,7 @@ int main(int argc, char **argv) {
   /* Open dockapp
    */
   if(!dockapp_open()) {
-    
+
     /* Read config file
      */
     if(!config_init()) {
@@ -170,7 +170,7 @@ int main(int argc, char **argv) {
       /* Initialize xpms
        */
       xpm_init();
-      
+
       /* Initialize fonts
        */
       font_init();
@@ -182,7 +182,7 @@ int main(int argc, char **argv) {
       /* Draw everything
        */
       drawall();
-      
+
       /* Execute main loop
        */
       mainloop();
@@ -204,7 +204,7 @@ int main(int argc, char **argv) {
     /* Close dockapp
      */
     dockapp_close();
-    
+
   }
 
   /* Free dockapp
@@ -442,7 +442,7 @@ int config_init() {
     "mountpoint ",
     ""
   };
-  
+
   int keynum2;
   char *keyarg2;
   static char *keys2[] = {
@@ -621,7 +621,7 @@ void font_init() {
     fprintf(stderr, "wmmount: font %s not found\n", font);
     exit(1);
   }
-  
+
   f_usage=xfs->fid;
   usagex=6-xfs->min_bounds.lbearing;
   usagey+=xfs->ascent;
