@@ -742,7 +742,8 @@ void drawall() {
    */
   XCopyArea(dockapp_d, pm_main, dockapp_pm_main, dockapp_gc_clip, 0, 0, 64, 64, 0, 0);
 
-  XCopyArea(dockapp_d, pm_icon[mpoint[select1].icon], dockapp_pm_main, dockapp_gc_main, 0, 0, 32, 10, 25, 30);
+  if (pm_icon[mpoint[select1].icon])
+    XCopyArea(dockapp_d, pm_icon[mpoint[select1].icon], dockapp_pm_main, dockapp_gc_main, 0, 0, 32, 10, 25, 30);
 
   XSetFont(dockapp_d, dockapp_gc_main, f_name);
   XSetForeground(dockapp_d, dockapp_gc_main, dockapp_color0);

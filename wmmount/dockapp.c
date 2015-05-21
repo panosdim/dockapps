@@ -313,7 +313,8 @@ void dockapp_createpixmap(char **data, char *buf, char *file, Pixmap *image, Pix
     if(buf!=NULL)
       XpmCreatePixmapFromBuffer(dockapp_d, dockapp_w_root, buf, image, mask, &dockapp_xpmattr);
     else
-      XpmReadFileToPixmap(dockapp_d, dockapp_w_root, file, image, mask, &dockapp_xpmattr);
+      if (XpmReadFileToPixmap(dockapp_d, dockapp_w_root, file, image, mask, &dockapp_xpmattr) < 0)
+        fprintf(stderr, "wmmount: error reading file %s\n", file);
   }
 
   if(width!=NULL)
