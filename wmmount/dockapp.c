@@ -270,6 +270,7 @@ int dockapp_open() {
 int dockapp_close() {
   XCloseDisplay(dockapp_d);
   dockapp_d=NULL;
+  return 0;
 }
 
 void dockapp_createwin(Window *win, int x, int y) {
