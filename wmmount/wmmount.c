@@ -848,6 +848,10 @@ void execcmd(char *cmd, char *path) {
       if(subst!=NULL) {
 	buflen+=strlen(subst)-2;
 	buf=(char *)realloc(buf, buflen);
+	if (buf == NULL) {
+	  fprintf(stderr, "wmmount: realloc() failed\n");
+	  exit(EXIT_FAILURE);
+	}
 	strcpy(buf+j, subst);
 	j+=strlen(subst);
 	continue;
