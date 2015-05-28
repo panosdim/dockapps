@@ -12,6 +12,7 @@
 /* Includes
  */
 
+#define _POSIX_C_SOURCE 200809L
 #include "dockapp.h"
 
 #include "xpm/dockapp_tile.xpm"
