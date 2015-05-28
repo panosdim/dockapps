@@ -414,6 +414,7 @@ void buttonpress(XButtonEvent *xev) {
 void buttonrelease(XButtonEvent *xev) {
   /* Process button release events
    */
+  (void) xev;
   state&=~(PREV | NEXT);
   drawbtns(PREV | NEXT);
   dockapp_expose();
