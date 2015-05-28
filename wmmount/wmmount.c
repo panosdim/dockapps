@@ -296,7 +296,7 @@ void mainloop() {
 	buttonrelease(&xev.xbutton);
 	break;
       case ClientMessage:
-	if(xev.xclient.data.l[0]==dockapp_a_delwin)
+	if((Atom)xev.xclient.data.l[0]==dockapp_a_delwin)
           return;
       }
     }
@@ -794,10 +794,11 @@ void execcmd(char *cmd, char *path) {
    * It doesn't wait for a return and children are reaped using SIGCHLD
    */
 
-  int argc=1;
+  size_t argc=1;
   char **argv=NULL;
 
-  int i, j;
+  size_t i;
+  int j;
   char c;
 
   int buflen=strlen(cmd)+1;
