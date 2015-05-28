@@ -881,5 +881,7 @@ void execcmd(char *cmd, char *path) {
     free(argv);
     free(buf);
     exit(127);
+  } else {
+    free(argv);
   }
 }
