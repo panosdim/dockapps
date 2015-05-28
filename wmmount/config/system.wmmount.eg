@@ -17,19 +17,19 @@
 # '%n' will be replaced with the name of the mountpoint.
 # '%%' will be replaced with '%'.
 # Commands are executed directly (not by a shell) for speed.
-# These entries may be ommitted (defaults in wmmount.c).
+# These entries may be omitted (defaults in wmmount.c).
 
 #mountcmd=/bin/mount %m
 #umountcmd=/bin/umount %m
 
 # Tell wmmount what to do when you double-click on the information box.
-# This entry may be ommitted.
+# This entry may be omitted.
 
 #opencmd=/usr/X11R6/bin/nxterm -T '%n - %m' -e mc %m
 #opencmd=kfmclient exec %m
 
 # Choose fonts for the information box.
-# These entries may be ommitted.
+# These entries may be omitted.
 
 #namefont=-*-helvetica-bold-r-*-*-10-*-*-*-*-*-*-*
 #usagefont=-*-helvetica-medium-r-*-*-10-*-*-*-*-*-*-*
