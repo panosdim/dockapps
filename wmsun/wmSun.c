@@ -1,12 +1,12 @@
 /*
  *
  *  	wmSun-1.03 (C) 1999 Mike Henderson (mghenderson@lanl.gov)
- * 
+ *
  *  		- Shows Sun Rise/Set Times....
- *          
- * 
- * 
- * 
+ *
+ *
+ *
+ *
  *
  * 	This program is free software; you can redistribute it and/or modify
  * 	it under the terms of the GNU General Public License as published by
@@ -20,11 +20,11 @@
  *
  * 	You should have received a copy of the GNU General Public License
  * 	along with this program (see the file COPYING); if not, write to the
- * 	Free Software Foundation, Inc., 59 Temple Place - Suite 330, 
+ * 	Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  *      Boston, MA  02111-1307, USA
  *
  *      Things TODO:
- *                  - clean up code! 
+ *                  - clean up code!
  *                  - support for 8-bit displays.
  *                  - more detailed documentation.
  *                  - eclipses?
@@ -32,12 +32,12 @@
  *                    Could be something like this;
  *                       First click brings up buttons to change date.
  *                       Second click brings up buttons to change lat/lon.
- *                       Third goes back to display 
+ *                       Third goes back to display
  *                       Set time delay to go back to display if user doesnt do it...
  *
  *
- *                  
- *                 
+ *
+ *
  *
  *      Changes:
  *
@@ -66,8 +66,8 @@
 
 
 
-/*  
- *   Includes  
+/*
+ *   Includes
  */
 #define _DEFAULT_SOURCE
 #include <stdio.h>
@@ -84,8 +84,8 @@
 
 
 
-/* 
- *  Delay between refreshes (in microseconds) 
+/*
+ *  Delay between refreshes (in microseconds)
  */
 #define DELAY 10000L
 #define WMSUN_VERSION "1.03"
@@ -104,7 +104,7 @@ void SunRise(int year, int month, int day, double LocalHour, double *UTRise,
 
 int	ToggleWindow = 0;
 int	nMAX = 1;
-int	Flag = 1; 
+int	Flag = 1;
 int	UseUserTimeDiff = 0;
 int	UseUserDate = 0;
 long	UserDate;
@@ -116,8 +116,8 @@ int	xDigit[11] = {8, 18, 27, 37, 46, 55, 64, 74, 83, 92, 102};
 
 
 
-/*  
- *   main  
+/*
+ *   main
  */
 int main(int argc, char *argv[]) {
 
@@ -138,22 +138,22 @@ int main(int argc, char *argv[]) {
 
 
 
-  
+
     /*
      *  Parse any command line arguments.
      */
     Glat = Glon = 0.0;
     ParseCMDLine(argc, argv);
     Glat *= RadPerDeg; SinGlat = sin( Glat ); CosGlat = cos( Glat );
-   
 
-   
+
+
     openXwindow(argc, argv, wmSun_master, (char *)wmSun_mask_bits, wmSun_mask_width, wmSun_mask_height);
 
 
 
 
-   
+
     /*
      *  Loop until we die
      */
@@ -183,7 +183,7 @@ int main(int argc, char *argv[]) {
 	    nMAX = 1000;
 
 
-            CurrentGMTTime = time(CurrentTime); GMTTime = gmtime(&CurrentGMTTime); 
+            CurrentGMTTime = time(CurrentTime); GMTTime = gmtime(&CurrentGMTTime);
 	    DayOfMonth = GMTTime->tm_mday;
 
 	    UT = GMTTime->tm_hour + GMTTime->tm_min/60.0 + GMTTime->tm_sec/3600.0;
@@ -237,7 +237,7 @@ int main(int argc, char *argv[]) {
 	    	    copyXPMArea(10, 84, 28, 7, 19, 15);
 		}
 
-	    
+
 		if (LTSet > 0.0){
 	    	    val = LTSet;
 	    	    H = (int)val; val = (val-H)*60.0;
@@ -259,7 +259,7 @@ int main(int argc, char *argv[]) {
 	} else {
 
 	    /*
-	     *  Update the counter. 
+	     *  Update the counter.
 	     */
 	    ++n;
 
@@ -272,7 +272,7 @@ int main(int argc, char *argv[]) {
 
 
 
-	/* 
+	/*
 	 *   Process any pending X events.
 	 */
         while(XPending(display)){
@@ -293,9 +293,9 @@ int main(int argc, char *argv[]) {
 
 
 
-	
-	/* 
-	 *  Redraw and wait for next update 
+
+	/*
+	 *  Redraw and wait for next update
 	 */
 	RedrawWindow();
 	ts.tv_sec = 0;
@@ -316,13 +316,13 @@ int main(int argc, char *argv[]) {
 
 
 
-/* 
- *   ParseCMDLine()  
+/*
+ *   ParseCMDLine()
  */
 void ParseCMDLine(int argc, char *argv[]) {
 
     int  i;
-  
+
     for (i = 1; i < argc; i++) {
 
         if (!strcmp(argv[i], "-display")){
