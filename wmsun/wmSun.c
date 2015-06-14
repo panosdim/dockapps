@@ -69,6 +69,7 @@
 /*  
  *   Includes  
  */
+#define _DEFAULT_SOURCE
 #include <stdio.h>
 #include <math.h>
 #include <unistd.h>
@@ -159,6 +160,7 @@ int main(int argc, char *argv[]) {
     n = 32000;
     OldLocalDayOfMonth = -999;
     while(1) {
+	struct timespec ts;
 
 
 	if (Flag) {
@@ -296,7 +298,9 @@ int main(int argc, char *argv[]) {
 	 *  Redraw and wait for next update 
 	 */
 	RedrawWindow();
-	usleep(DELAY);
+	ts.tv_sec = 0;
+	ts.tv_nsec = DELAY * 1000;
+	nanosleep(&ts, NULL);
 
 
      }
