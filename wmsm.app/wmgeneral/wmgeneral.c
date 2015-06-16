@@ -105,7 +105,6 @@ MOUSE_REGION	mouse_region[MAX_MOUSE_REGION];
 /***********************/
 
 static void GetXPM(XpmIcon *, char **);
-static Pixel GetColor(char *);
 void RedrawWindow(void);
 void AddMouseRegion(int, int, int, int, int);
 int CheckMouseRegion(int, int);
@@ -212,7 +211,7 @@ static void GetXPM(XpmIcon *wmgen, char *pixmap_bytes[]) {
 |* GetColor																	   *|
 \*******************************************************************************/
 
-static Pixel GetColor(char *name) {
+Pixel GetColor(const char *name) {
 
 	XColor				color;
 	XWindowAttributes	attributes;

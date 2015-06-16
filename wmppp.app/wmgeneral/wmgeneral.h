@@ -85,5 +85,6 @@ void copyXBMArea(int, int, int, int, int, int);
 void setMaskXY(int, int);
 
 void parse_rcfile(const char *, rckeys *);
+Pixel GetColor(const char *);
 
 #endif
