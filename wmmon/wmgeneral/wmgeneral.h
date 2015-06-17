@@ -86,5 +86,10 @@ void setMaskXY(int, int);
 
 void parse_rcfile(const char *, rckeys *);
 Pixel GetColor(const char *);
+int loadFont(const char *fontname);	/* -1 on fail, 0 success. */
+void drawString(int dest_x, int dest_y, const char *string,
+				const char *colorname, const char *bgcolorname,
+				int right_justify);
+void eraseRect(int x, int y, int x2, int y2, const char *bgcolorname);
 
 #endif

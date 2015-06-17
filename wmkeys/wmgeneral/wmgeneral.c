@@ -65,6 +65,7 @@
 #include <X11/extensions/shape.h>       /* for XShapeCombineMask */
 #include <X11/extensions/shapeconst.h>  /* for ShapeBounding, ShapeSet */
 #include <X11/xpm.h>                    /* for XpmAttributes, Pixel, etc */
+#include <assert.h>                     /* for assert */
 #include <stddef.h>                     /* for size_t */
 #include <stdio.h>                      /* for fprintf, stderr, NULL, etc */
 #include <stdlib.h>                     /* for exit, free */
@@ -376,6 +377,41 @@ void copyXBMArea(int x, int y, int sx, int sy, int dx, int dy) {
 	XCopyArea(display, wmgen.mask, wmgen.pixmap, NormalGC, x, y, sx, sy, dx, dy);
 }
 
+XFontStruct *f;
+int loadFont(const char *fontname)
+{
+	if (display != NULL) {
+		f = XLoadQueryFont(display, fontname);
+		if (f) {
+			XSetFont(display, NormalGC, f->fid);
+			return 0;
+		} else {
+			printf("couldn't set font!\n");
+		}
+	}
+	return -1;
+}
+
+void drawString(int dest_x, int dest_y, const char *string,
+				const char *colorname, const char *bgcolorname,
+				int right_justify)
+{
+	int len = strlen(string);
+	assert(colorname != NULL);
+	XSetForeground(display, NormalGC, GetColor(colorname));
+	XSetBackground(display, NormalGC, GetColor(bgcolorname));
+	if (right_justify)
+		dest_x -= XTextWidth(f, string, len);
+	XDrawImageString(display, wmgen.pixmap, NormalGC, dest_x, dest_y,
+					 string, len);
+}
+
+void eraseRect(int x, int y, int x2, int y2, const char *bgcolorname)
+{
+	XSetForeground(display, NormalGC, GetColor(bgcolorname));
+	XFillRectangle(display, wmgen.pixmap, NormalGC, x, y, x2 - x,
+				   y2 - y);
+}
 
 /*******************************************************************************\
 |* setMaskXY																   *|
