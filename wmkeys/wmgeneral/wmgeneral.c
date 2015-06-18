@@ -189,7 +189,7 @@ void parse_rcfile2(const char *filename, rckeys2 *keys) {
 |* GetXPM																	   *|
 \*******************************************************************************/
 
-static void GetXPM(XpmIcon *wmgen, char *pixmap_bytes[]) {
+static void GetXPM(XpmIcon *wmgen_local, char *pixmap_bytes[]) {
 
 	XWindowAttributes	attributes;
 	int					err;
@@ -197,10 +197,13 @@ static void GetXPM(XpmIcon *wmgen, char *pixmap_bytes[]) {
 	/* For the colormap */
 	XGetWindowAttributes(display, Root, &attributes);
 
-	wmgen->attributes.valuemask |= (XpmReturnPixels | XpmReturnExtensions);
+	wmgen_local->attributes.valuemask |=
+		(XpmReturnPixels | XpmReturnExtensions);
 
-	err = XpmCreatePixmapFromData(display, Root, pixmap_bytes, &(wmgen->pixmap),
-					&(wmgen->mask), &(wmgen->attributes));
+	err = XpmCreatePixmapFromData(display, Root, pixmap_bytes,
+				      &(wmgen_local->pixmap),
+				      &(wmgen_local->mask),
+				      &(wmgen_local->attributes));
 
 	if (err != XpmSuccess) {
 		fprintf(stderr, "Not enough free colorcells.\n");
