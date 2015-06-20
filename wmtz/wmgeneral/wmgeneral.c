@@ -124,17 +124,17 @@ void parse_rcfile(const char *filename, rckeys *keys) {
 		char temp[128];
 
 		while (fgets(temp, 128, fp)) {
-			char *q, *saveptr;
+			char *q, *r, *saveptr;
 			const char *tokens = " :\t\n";
 			int key;
 
 			key = 0;
 			q = strdup(temp);
-			q = strtok_r(q, tokens, &saveptr);
-			if(!q)
+			r = strtok_r(q, tokens, &saveptr);
+			if(!r)
 				continue;
 			while (key >= 0 && keys[key].label) {
-				if ((!strcmp(q, keys[key].label))) {
+				if ((!strcmp(r, keys[key].label))) {
 					int i;
 
 					p = strstr(temp, keys[key].label);
@@ -145,6 +145,7 @@ void parse_rcfile(const char *filename, rckeys *keys) {
 					key = -1;
 				} else key++;
 			}
+			free(q);
 		}
 		fclose(fp);
 	}
