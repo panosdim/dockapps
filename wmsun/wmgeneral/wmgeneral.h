@@ -75,11 +75,11 @@ Display		*display;
 void AddMouseRegion(int index, int left, int top, int right, int bottom);
 int CheckMouseRegion(int x, int y);
 
-void openXwindow(int argc, char *argv[], char **, char *, int, int);
+void openXwindow(int argc, char *argv[], const char **, char *, int, int);
 void RedrawWindow(void);
 void RedrawWindowXY(int x, int y);
 
-void createXBMfromXPM(char *, char **, int, int);
+void createXBMfromXPM(char *, const char **, int, int);
 void copyXPMArea(int, int, int, int, int, int);
 void copyXBMArea(int, int, int, int, int, int);
 void setMaskXY(int, int);

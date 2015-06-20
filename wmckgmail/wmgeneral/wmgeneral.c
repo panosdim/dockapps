@@ -105,7 +105,7 @@ MOUSE_REGION	mouse_region[MAX_MOUSE_REGION];
  /* Function Prototypes */
 /***********************/
 
-static void GetXPM(XpmIcon *, char **);
+static void GetXPM(XpmIcon *, const char **);
 void RedrawWindow(void);
 void AddMouseRegion(int, int, int, int, int);
 int CheckMouseRegion(int, int);
@@ -125,7 +125,7 @@ void parse_rcfile(const char *filename, rckeys *keys) {
 
 		while (fgets(temp, 128, fp)) {
 			char *q, *saveptr;
-			char *tokens = " :\t\n";
+			const char *tokens = " :\t\n";
 			int key;
 
 			key = 0;
@@ -169,7 +169,7 @@ void parse_rcfile2(const char *filename, rckeys2 *keys) {
 			key = 0;
 			while (key >= 0 && keys[key].label) {
 				if ((p = strstr(line, keys[key].label))) {
-					char *tokens = " :\t\n";
+					const char *tokens = " :\t\n";
 					int i;
 
 					p += strlen(keys[key].label);
@@ -189,7 +189,7 @@ void parse_rcfile2(const char *filename, rckeys2 *keys) {
 |* GetXPM																	   *|
 \*******************************************************************************/
 
-static void GetXPM(XpmIcon *wmgen_local, char *pixmap_bytes[]) {
+static void GetXPM(XpmIcon *wmgen_local, const char *pixmap_bytes[]) {
 
 	XWindowAttributes	attributes;
 	int					err;
@@ -200,7 +200,7 @@ static void GetXPM(XpmIcon *wmgen_local, char *pixmap_bytes[]) {
 	wmgen_local->attributes.valuemask |=
 		(XpmReturnPixels | XpmReturnExtensions);
 
-	err = XpmCreatePixmapFromData(display, Root, pixmap_bytes,
+	err = XpmCreatePixmapFromData(display, Root, (char **) pixmap_bytes,
 				      &(wmgen_local->pixmap),
 				      &(wmgen_local->mask),
 				      &(wmgen_local->attributes));
@@ -316,7 +316,7 @@ int CheckMouseRegion(int x, int y) {
 /*******************************************************************************\
 |* createXBMfromXPM															   *|
 \*******************************************************************************/
-void createXBMfromXPM(char *xbm, char **xpm, int sx, int sy) {
+void createXBMfromXPM(char *xbm, const char **xpm, int sx, int sy) {
 
 	int	i,j,k;
 	int	width, height, numcol, depth;
@@ -430,7 +430,7 @@ void setMaskXY(int x, int y) {
 /*******************************************************************************\
 |* openXwindow																   *|
 \*******************************************************************************/
-void openXwindow(int argc, char *argv[], char *pixmap_bytes[], char *pixmask_bits, int pixmask_width, int pixmask_height) {
+void openXwindow(int argc, char *argv[], const char *pixmap_bytes[], char *pixmask_bits, int pixmask_width, int pixmask_height) {
 
 	unsigned int	borderwidth = 1;
 	XClassHint		classHint;
