@@ -1,14 +1,16 @@
-LIBDIR = -L/usr/X11R6/lib
+PREFIX = /usr/local
+BINDIR = $(PREFIX)/bin
+INSTALL = install
 LIBS   = -lXpm -lXext -lX11 -ldockapp
 OBJS =  wmtictactoe.o
 
 .c.o:
-	cc -c -g -O2 -Wall $< -o $*.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $*.o
 
 all: wmtictactoe
 
 wmtictactoe: $(OBJS)
-	cc -o wmtictactoe $^ $(LIBDIR) $(LIBS)
+	$(CC) $(LDFLAGS) -o wmtictactoe $^ $(LIBS)
 
 clean:
 	for i in $(OBJS) ; do \
@@ -17,5 +19,6 @@ clean:
 	rm -rf wmtictactoe core *~
 
 install:
-	/usr/bin/install -c -o 0 -g 0 -s -m 755 wmtictactoe /usr/local/bin/wmtictactoe
+	$(INSTALL) -d $(DESTDIR)$(BINDIR)
+	$(INSTALL) wmtictactoe $(DESTDIR)$(BINDIR)
 
