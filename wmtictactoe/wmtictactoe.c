@@ -123,7 +123,7 @@ int     wmtictactoe_mask_height = 64;
 // ----------------------------------------------------------
 // declaracao das funcoes do sistema
 
-void    main (int argc, char *argv[]);
+int     main (int argc, char *argv[]);
 void    usage (void);
 void    printversion (void);
 void    readfile (void);
@@ -168,7 +168,7 @@ void    game_over (void);
 //        in: argc - numero de argumentos passados por linha d comando
 //            argv - vetor com os argumentos
 //       out: nada
-void main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
 	int     i;
      
@@ -221,6 +221,8 @@ void main (int argc, char *argv[])
 	}
 	
 	principal (argc, argv);
+
+	return 0;
 }
 
 // -------------------------------------------------------------------------------------------
