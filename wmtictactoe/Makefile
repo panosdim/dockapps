@@ -1,5 +1,6 @@
 PREFIX = /usr/local
 BINDIR = $(PREFIX)/bin
+MANDIR = $(PREFIX)/share/man/man6
 INSTALL = install
 LIBS   = -lXpm -lXext -lX11 -ldockapp
 OBJS =  wmtictactoe.o
@@ -21,4 +22,5 @@ clean:
 install:
 	$(INSTALL) -d $(DESTDIR)$(BINDIR)
 	$(INSTALL) wmtictactoe $(DESTDIR)$(BINDIR)
-
+	$(INSTALL) -d $(DESTDIR)$(MANDIR)
+	$(INSTALL) -m 644 wmtictactoe.6 $(DESTDIR)$(MANDIR)
