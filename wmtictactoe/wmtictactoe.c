@@ -43,7 +43,7 @@
 // ---------------------------------------------------------------
 // definicoes :)
 
-#define WMTICTACTOE_VERSION "1.1"
+#define WMTICTACTOE_VERSION "1.2"
 
 #define TRUE            1
 #define FALSE           0

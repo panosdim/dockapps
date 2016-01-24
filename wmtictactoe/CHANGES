@@ -2,6 +2,25 @@ wmTicTacToe changes.
 
 Version         Description
 ----------------------------------------------------------------
+1.2             - Released 160123
+                - Now maintained by Window Maker Developers Team
+                  <wmaker-dev@lists.windowmaker.org>.
+                - Remove wmgeneral directory; now uses wmgeneral from
+                  libdockapp.
+                - Source files moved to top directory.
+                - Change return type of main to int.
+                - Add error handling for fgets.
+                - Avoid buffer overflow by allowing room for null terminator.
+                - Update Makefile.
+                - Add manpage.  Originally from Debian package [1] with patches
+                  to fix warnings from Launchpad bug #1074959 [2].
+                - Remove trailing whitespace.
+
+                  [1] http://sources.debian.net/src/wmtictactoe/1.1-7/debian/
+                      wmtictactoe.6/
+                  [2] https://bugs.launchpad.net/ubuntu/+source/wmtictactoe/
+                      +bug/1074959
+
 1.1             - Released 990830
 		- Added "deadmatch" game mode
 
