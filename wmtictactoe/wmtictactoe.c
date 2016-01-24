@@ -1058,7 +1058,10 @@ readfile (void)
 
 	if ((rcfile=fopen(rcfilen, "r")) != NULL){
 	        do {
-		        fgets(buf, 250, rcfile);
+		        if (fgets(buf, 250, rcfile) == NULL) {
+				fprintf(stderr, "wmtictactoe:  error reading %s.\n", rcfilen);
+				exit(1);
+			}
 			if((done = feof(rcfile)) == 0){
 			        buf[strlen(buf)-1]=0;
 				if(strncmp(buf, "score_user_offensive ", strlen("score_user "))==0)
