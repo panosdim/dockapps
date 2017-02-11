@@ -193,11 +193,11 @@ static void GetXPM(XpmIcon *wmgen, char *pixmap_bytes[]) {
 	int					err;
 
 	/* For the colormap */
-	XGetWindowAttributes(display, Root, &attributes);
+	XGetWindowAttributes(DADisplay, Root, &attributes);
 
 	wmgen->attributes.valuemask |= (XpmReturnPixels | XpmReturnExtensions);
 
-	err = XpmCreatePixmapFromData(display, Root, pixmap_bytes, &(wmgen->pixmap),
+	err = XpmCreatePixmapFromData(DADisplay, Root, pixmap_bytes, &(wmgen->pixmap),
 					&(wmgen->mask), &(wmgen->attributes));
 
 	if (err != XpmSuccess) {
@@ -215,12 +215,12 @@ static Pixel GetColor(char *name) {
 	XColor				color;
 	XWindowAttributes	attributes;
 
-	XGetWindowAttributes(display, Root, &attributes);
+	XGetWindowAttributes(DADisplay, Root, &attributes);
 
 	color.pixel = 0;
-	if (!XParseColor(display, attributes.colormap, name, &color)) {
+	if (!XParseColor(DADisplay, attributes.colormap, name, &color)) {
 		fprintf(stderr, "wm.app: can't parse %s.\n", name);
-	} else if (!XAllocColor(display, attributes.colormap, &color)) {
+	} else if (!XAllocColor(DADisplay, attributes.colormap, &color)) {
 		fprintf(stderr, "wm.app: can't allocate %s.\n", name);
 	}
 	return color.pixel;
@@ -235,7 +235,7 @@ static int flush_expose(Window w) {
 	XEvent 		dummy;
 	int			i=0;
 
-	while (XCheckTypedWindowEvent(display, w, Expose, &dummy))
+	while (XCheckTypedWindowEvent(DADisplay, w, Expose, &dummy))
 		i++;
 
 	return i;
@@ -248,10 +248,10 @@ static int flush_expose(Window w) {
 void RedrawWindow(void) {
 
 	flush_expose(iconwin);
-	XCopyArea(display, wmgen.pixmap, iconwin, NormalGC,
+	XCopyArea(DADisplay, wmgen.pixmap, iconwin, NormalGC,
 				0,0, wmgen.attributes.width, wmgen.attributes.height, 0,0);
 	flush_expose(win);
-	XCopyArea(display, wmgen.pixmap, win, NormalGC,
+	XCopyArea(DADisplay, wmgen.pixmap, win, NormalGC,
 				0,0, wmgen.attributes.width, wmgen.attributes.height, 0,0);
 }
 
@@ -262,10 +262,10 @@ void RedrawWindow(void) {
 void RedrawWindowXY(int x, int y) {
 
 	flush_expose(iconwin);
-	XCopyArea(display, wmgen.pixmap, iconwin, NormalGC,
+	XCopyArea(DADisplay, wmgen.pixmap, iconwin, NormalGC,
 				x,y, wmgen.attributes.width, wmgen.attributes.height, 0,0);
 	flush_expose(win);
-	XCopyArea(display, wmgen.pixmap, win, NormalGC,
+	XCopyArea(DADisplay, wmgen.pixmap, win, NormalGC,
 				x,y, wmgen.attributes.width, wmgen.attributes.height, 0,0);
 }
 
@@ -362,7 +362,7 @@ void createXBMfromXPM(char *xbm, char **xpm, int sx, int sy) {
 
 void copyXPMArea(int x, int y, int sx, int sy, int dx, int dy) {
 
-	XCopyArea(display, wmgen.pixmap, wmgen.pixmap, NormalGC, x, y, sx, sy, dx, dy);
+	XCopyArea(DADisplay, wmgen.pixmap, wmgen.pixmap, NormalGC, x, y, sx, sy, dx, dy);
 
 }
 
@@ -372,7 +372,7 @@ void copyXPMArea(int x, int y, int sx, int sy, int dx, int dy) {
 
 void copyXBMArea(int x, int y, int sx, int sy, int dx, int dy) {
 
-	XCopyArea(display, wmgen.mask, wmgen.pixmap, NormalGC, x, y, sx, sy, dx, dy);
+	XCopyArea(DADisplay, wmgen.mask, wmgen.pixmap, NormalGC, x, y, sx, sy, dx, dy);
 }
 
 
@@ -382,8 +382,8 @@ void copyXBMArea(int x, int y, int sx, int sy, int dx, int dy) {
 
 void setMaskXY(int x, int y) {
 
-	 XShapeCombineMask(display, win, ShapeBounding, x, y, pixmask, ShapeSet);
-	 XShapeCombineMask(display, iconwin, ShapeBounding, x, y, pixmask, ShapeSet);
+	 XShapeCombineMask(DADisplay, win, ShapeBounding, x, y, pixmask, ShapeSet);
+	 XShapeCombineMask(DADisplay, iconwin, ShapeBounding, x, y, pixmask, ShapeSet);
 }
 
 /*******************************************************************************\
@@ -412,13 +412,10 @@ void openXwindow(int argc, char *argv[], char *pixmap_bytes[], char *pixmask_bit
 			geometry = argv[++i];
 	}
 
-	if (!(display = XOpenDisplay(display_name))) {
-		fprintf(stderr, "%s: can't open display %s\n",
-						wname, XDisplayName(display_name));
-		exit(1);
-	}
-	screen  = DefaultScreen(display);
-	Root    = RootWindow(display, screen);
+	DAOpenDisplay(display_name, argc, argv);
+	display = DADisplay; /* deprecated name */
+	screen  = DefaultScreen(DADisplay);
+	Root    = RootWindow(DADisplay, screen);
 
 	/* Convert XPM to XImage */
 	GetXPM(&wmgen, pixmap_bytes);
@@ -431,33 +428,33 @@ void openXwindow(int argc, char *argv[], char *pixmap_bytes[], char *pixmask_bit
 	back_pix = GetColor("white");
 	fore_pix = GetColor("black");
 
-	XWMGeometry(display, screen, geometry, NULL, borderwidth, &mysizehints,
+	XWMGeometry(DADisplay, screen, geometry, NULL, borderwidth, &mysizehints,
 				&mysizehints.x, &mysizehints.y,&mysizehints.width,&mysizehints.height, &dummy);
 
 	mysizehints.width = 64;
 	mysizehints.height = 64;
 
-	win = XCreateSimpleWindow(display, Root, mysizehints.x, mysizehints.y,
+	win = XCreateSimpleWindow(DADisplay, Root, mysizehints.x, mysizehints.y,
 				mysizehints.width, mysizehints.height, borderwidth, fore_pix, back_pix);
 
-	iconwin = XCreateSimpleWindow(display, win, mysizehints.x, mysizehints.y,
+	iconwin = XCreateSimpleWindow(DADisplay, win, mysizehints.x, mysizehints.y,
 				mysizehints.width, mysizehints.height, borderwidth, fore_pix, back_pix);
 
 	/* Activate hints */
-	XSetWMNormalHints(display, win, &mysizehints);
+	XSetWMNormalHints(DADisplay, win, &mysizehints);
 	classHint.res_name = wname;
 	classHint.res_class = wname;
-	XSetClassHint(display, win, &classHint);
+	XSetClassHint(DADisplay, win, &classHint);
 
-	XSelectInput(display, win, ButtonPressMask | ExposureMask | ButtonReleaseMask | PointerMotionMask | StructureNotifyMask);
-	XSelectInput(display, iconwin, ButtonPressMask | ExposureMask | ButtonReleaseMask | PointerMotionMask | StructureNotifyMask);
+	XSelectInput(DADisplay, win, ButtonPressMask | ExposureMask | ButtonReleaseMask | PointerMotionMask | StructureNotifyMask);
+	XSelectInput(DADisplay, iconwin, ButtonPressMask | ExposureMask | ButtonReleaseMask | PointerMotionMask | StructureNotifyMask);
 
 	if (XStringListToTextProperty(&wname, 1, &name) == 0) {
 		fprintf(stderr, "%s: can't allocate window name\n", wname);
 		exit(1);
 	}
 
-	XSetWMName(display, win, &name);
+	XSetWMName(DADisplay, win, &name);
 
 	/* Create GC for drawing */
 
@@ -465,14 +462,14 @@ void openXwindow(int argc, char *argv[], char *pixmap_bytes[], char *pixmask_bit
 	gcv.foreground = fore_pix;
 	gcv.background = back_pix;
 	gcv.graphics_exposures = 0;
-	NormalGC = XCreateGC(display, Root, gcm, &gcv);
+	NormalGC = XCreateGC(DADisplay, Root, gcm, &gcv);
 
 	/* ONLYSHAPE ON */
 
-	pixmask = XCreateBitmapFromData(display, win, pixmask_bits, pixmask_width, pixmask_height);
+	pixmask = XCreateBitmapFromData(DADisplay, win, pixmask_bits, pixmask_width, pixmask_height);
 
-	XShapeCombineMask(display, win, ShapeBounding, 0, 0, pixmask, ShapeSet);
-	XShapeCombineMask(display, iconwin, ShapeBounding, 0, 0, pixmask, ShapeSet);
+	XShapeCombineMask(DADisplay, win, ShapeBounding, 0, 0, pixmask, ShapeSet);
+	XShapeCombineMask(DADisplay, iconwin, ShapeBounding, 0, 0, pixmask, ShapeSet);
 
 	/* ONLYSHAPE OFF */
 
@@ -483,8 +480,8 @@ void openXwindow(int argc, char *argv[], char *pixmap_bytes[], char *pixmask_bit
 	mywmhints.window_group = win;
 	mywmhints.flags = StateHint | IconWindowHint | IconPositionHint | WindowGroupHint;
 
-	XSetWMHints(display, win, &mywmhints);
+	XSetWMHints(DADisplay, win, &mywmhints);
 
-	XSetCommand(display, win, argv, argc);
-	XMapWindow(display, win);
+	XSetCommand(DADisplay, win, argv, argc);
+	XMapWindow(DADisplay, win);
 }

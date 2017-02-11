@@ -27,6 +27,7 @@
 #ifndef WMGENERAL_H_INCLUDED
 #define WMGENERAL_H_INCLUDED
 
+#include "dockapp.h"
 #include <X11/X.h>                      /* for Pixmap */
 #include <X11/Xlib.h>                   /* for Display */
 #include <X11/xpm.h>                    /* for XpmAttributes */
@@ -66,7 +67,7 @@ typedef struct {
  /* Global variable */
 /*******************/
 
-Display		*display;
+Display *display __attribute__ ((deprecated ("use 'DADisplay' instead")));
 
   /***********************/
  /* Function Prototypes */
