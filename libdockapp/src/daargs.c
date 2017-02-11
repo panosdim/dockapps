@@ -47,6 +47,15 @@ int readIntOption(int index, char **argv);
  */
 
 void
+DAStoreArguments(int argc, char **argv)
+{
+	_daContext = DAContextInit();
+	_daContext->argc            = argc;
+	_daContext->argv            = argv;
+	_daContext->programName     = argv[0];
+}
+
+void
 DAParseArguments(
 	int argc,
 	char **argv,
@@ -58,12 +67,7 @@ DAParseArguments(
 	int i, j, size;
 	int found = 0;
 
-	_daContext = DAContextInit();
-
-	_daContext->argc            = argc;
-	_daContext->argv            = argv;
-	_daContext->programName     = argv[0];
-
+	DAStoreArguments(argc, argv);
 	size = (count + DEFAULT_OPTION_COUNT) * sizeof(DAProgramOption *);
 	_daContext->options         = malloc(size);
 	memset(_daContext->options, 0, size);

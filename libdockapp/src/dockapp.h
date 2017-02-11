@@ -149,6 +149,15 @@ void DASetExpectedVersion(unsigned long expectedVersion);
 
 
 /*
+ * DAStoreArguments-
+ *      Store command line arguments.  Use only if you are *not* using
+ * libdockapp to parse the command line arguments.  If you would like
+ * libdockapp to handle the parsing, then use DAParseArguments() instead.
+ * This function must be called *before* DAOpenDisplay().
+ */
+void DAStoreArguments(int argc, char **argv);
+
+/*
  * DAParseArguments-
  *	Command line arguments parser. The program is exited if there are
  * syntax errors.
