@@ -79,7 +79,6 @@ int			screen;
 XSizeHints	mysizehints;
 XWMHints	mywmhints;
 Pixel		back_pix, fore_pix;
-GC			NormalGC;
 XpmIcon		wmgen;
 Pixmap		pixmask;
 
@@ -247,10 +246,10 @@ static int flush_expose(Window w) {
 void RedrawWindow(void) {
 
 	flush_expose(DAIcon);
-	XCopyArea(DADisplay, wmgen.pixmap, DAIcon, NormalGC,
+	XCopyArea(DADisplay, wmgen.pixmap, DAIcon, DAGC,
 				0,0, wmgen.attributes.width, wmgen.attributes.height, 0,0);
 	flush_expose(DALeader);
-	XCopyArea(DADisplay, wmgen.pixmap, DALeader, NormalGC,
+	XCopyArea(DADisplay, wmgen.pixmap, DALeader, DAGC,
 				0,0, wmgen.attributes.width, wmgen.attributes.height, 0,0);
 }
 
@@ -261,10 +260,10 @@ void RedrawWindow(void) {
 void RedrawWindowXY(int x, int y) {
 
 	flush_expose(DAIcon);
-	XCopyArea(DADisplay, wmgen.pixmap, DAIcon, NormalGC,
+	XCopyArea(DADisplay, wmgen.pixmap, DAIcon, DAGC,
 				x,y, wmgen.attributes.width, wmgen.attributes.height, 0,0);
 	flush_expose(DALeader);
-	XCopyArea(DADisplay, wmgen.pixmap, DALeader, NormalGC,
+	XCopyArea(DADisplay, wmgen.pixmap, DALeader, DAGC,
 				x,y, wmgen.attributes.width, wmgen.attributes.height, 0,0);
 }
 
@@ -361,7 +360,7 @@ void createXBMfromXPM(char *xbm, char **xpm, int sx, int sy) {
 
 void copyXPMArea(int x, int y, int sx, int sy, int dx, int dy) {
 
-	XCopyArea(DADisplay, wmgen.pixmap, wmgen.pixmap, NormalGC, x, y, sx, sy, dx, dy);
+	XCopyArea(DADisplay, wmgen.pixmap, wmgen.pixmap, DAGC, x, y, sx, sy, dx, dy);
 
 }
 
@@ -371,7 +370,7 @@ void copyXPMArea(int x, int y, int sx, int sy, int dx, int dy) {
 
 void copyXBMArea(int x, int y, int sx, int sy, int dx, int dy) {
 
-	XCopyArea(DADisplay, wmgen.mask, wmgen.pixmap, NormalGC, x, y, sx, sy, dx, dy);
+	XCopyArea(DADisplay, wmgen.mask, wmgen.pixmap, DAGC, x, y, sx, sy, dx, dy);
 }
 
 
@@ -392,9 +391,6 @@ void openXwindow(int argc, char *argv[], char *pixmap_bytes[], char *pixmask_bit
 
 	char			*display_name = NULL;
 	char			*wname = argv[0];
-
-	XGCValues		gcv;
-	unsigned long	gcm;
 
 	/* char			*geometry = NULL; */
 
@@ -424,17 +420,6 @@ void openXwindow(int argc, char *argv[], char *pixmap_bytes[], char *pixmask_bit
 	/* TODO - use DASetCallbacks */
 	XSelectInput(DADisplay, DALeader, ButtonPressMask | ExposureMask | ButtonReleaseMask | PointerMotionMask | StructureNotifyMask);
 	XSelectInput(DADisplay, DAIcon, ButtonPressMask | ExposureMask | ButtonReleaseMask | PointerMotionMask | StructureNotifyMask);
-
-	/* Create GC for drawing */
-	/* TODO - use DAGC */
-	back_pix = GetColor("white");
-	fore_pix = GetColor("black");
-
-	gcm = GCForeground | GCBackground | GCGraphicsExposures;
-	gcv.foreground = fore_pix;
-	gcv.background = back_pix;
-	gcv.graphics_exposures = 0;
-	NormalGC = XCreateGC(DADisplay, Root, gcm, &gcv);
 
 	/* ONLYSHAPE ON */
 	/* TODO - use DASetShapeWithOffsetForWindow */
