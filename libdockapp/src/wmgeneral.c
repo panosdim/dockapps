@@ -76,8 +76,6 @@
 
 Window		Root;
 int			screen;
-int			x_fd;
-int			d_depth;
 XSizeHints	mysizehints;
 XWMHints	mywmhints;
 Pixel		back_pix, fore_pix;
@@ -421,8 +419,6 @@ void openXwindow(int argc, char *argv[], char *pixmap_bytes[], char *pixmask_bit
 	}
 	screen  = DefaultScreen(display);
 	Root    = RootWindow(display, screen);
-	d_depth = DefaultDepth(display, screen);
-	x_fd    = XConnectionNumber(display);
 
 	/* Convert XPM to XImage */
 	GetXPM(&wmgen, pixmap_bytes);
