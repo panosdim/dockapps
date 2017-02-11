@@ -79,7 +79,6 @@ int			screen;
 XSizeHints	mysizehints;
 XWMHints	mywmhints;
 Pixel		back_pix, fore_pix;
-Window		iconwin, win;
 GC			NormalGC;
 XpmIcon		wmgen;
 Pixmap		pixmask;
@@ -247,11 +246,11 @@ static int flush_expose(Window w) {
 
 void RedrawWindow(void) {
 
-	flush_expose(iconwin);
-	XCopyArea(DADisplay, wmgen.pixmap, iconwin, NormalGC,
+	flush_expose(DAIcon);
+	XCopyArea(DADisplay, wmgen.pixmap, DAIcon, NormalGC,
 				0,0, wmgen.attributes.width, wmgen.attributes.height, 0,0);
-	flush_expose(win);
-	XCopyArea(DADisplay, wmgen.pixmap, win, NormalGC,
+	flush_expose(DALeader);
+	XCopyArea(DADisplay, wmgen.pixmap, DALeader, NormalGC,
 				0,0, wmgen.attributes.width, wmgen.attributes.height, 0,0);
 }
 
@@ -261,11 +260,11 @@ void RedrawWindow(void) {
 
 void RedrawWindowXY(int x, int y) {
 
-	flush_expose(iconwin);
-	XCopyArea(DADisplay, wmgen.pixmap, iconwin, NormalGC,
+	flush_expose(DAIcon);
+	XCopyArea(DADisplay, wmgen.pixmap, DAIcon, NormalGC,
 				x,y, wmgen.attributes.width, wmgen.attributes.height, 0,0);
-	flush_expose(win);
-	XCopyArea(DADisplay, wmgen.pixmap, win, NormalGC,
+	flush_expose(DALeader);
+	XCopyArea(DADisplay, wmgen.pixmap, DALeader, NormalGC,
 				x,y, wmgen.attributes.width, wmgen.attributes.height, 0,0);
 }
 
@@ -382,8 +381,8 @@ void copyXBMArea(int x, int y, int sx, int sy, int dx, int dy) {
 
 void setMaskXY(int x, int y) {
 
-	 XShapeCombineMask(DADisplay, win, ShapeBounding, x, y, pixmask, ShapeSet);
-	 XShapeCombineMask(DADisplay, iconwin, ShapeBounding, x, y, pixmask, ShapeSet);
+	 XShapeCombineMask(DADisplay, DALeader, ShapeBounding, x, y, pixmask, ShapeSet);
+	 XShapeCombineMask(DADisplay, DAIcon, ShapeBounding, x, y, pixmask, ShapeSet);
 }
 
 /*******************************************************************************\
@@ -391,27 +390,25 @@ void setMaskXY(int x, int y) {
 \*******************************************************************************/
 void openXwindow(int argc, char *argv[], char *pixmap_bytes[], char *pixmask_bits, int pixmask_width, int pixmask_height) {
 
-	unsigned int	borderwidth = 1;
-	XClassHint		classHint;
 	char			*display_name = NULL;
 	char			*wname = argv[0];
-	XTextProperty	name;
 
 	XGCValues		gcv;
 	unsigned long	gcm;
 
-	char			*geometry = NULL;
+	/* char			*geometry = NULL; */
 
-	int				dummy=0;
 	int				i;
 
 	for (i=1; argv[i]; i++) {
 		if (!strcmp(argv[i], "-display"))
 			display_name = argv[++i];
-		else if (!strcmp(argv[i], "-geometry"))
-			geometry = argv[++i];
+		/* else if (!strcmp(argv[i], "-geometry"))
+		 * 	geometry = argv[++i]; */
 	}
 
+
+	DAStoreArguments(argc, argv);
 	DAOpenDisplay(display_name, argc, argv);
 	display = DADisplay; /* deprecated name */
 	screen  = DefaultScreen(DADisplay);
@@ -420,43 +417,18 @@ void openXwindow(int argc, char *argv[], char *pixmap_bytes[], char *pixmask_bit
 	/* Convert XPM to XImage */
 	GetXPM(&wmgen, pixmap_bytes);
 
-	/* Create a window to hold the stuff */
-	mysizehints.flags = USSize | USPosition;
-	mysizehints.x = 0;
-	mysizehints.y = 0;
+	/* TODO - restore ability to specify position from geometry string */
+	/* using XWMGeometry */
+	DACreateIcon(wname, 64, 64, argc, argv);
 
-	back_pix = GetColor("white");
-	fore_pix = GetColor("black");
-
-	XWMGeometry(DADisplay, screen, geometry, NULL, borderwidth, &mysizehints,
-				&mysizehints.x, &mysizehints.y,&mysizehints.width,&mysizehints.height, &dummy);
-
-	mysizehints.width = 64;
-	mysizehints.height = 64;
-
-	win = XCreateSimpleWindow(DADisplay, Root, mysizehints.x, mysizehints.y,
-				mysizehints.width, mysizehints.height, borderwidth, fore_pix, back_pix);
-
-	iconwin = XCreateSimpleWindow(DADisplay, win, mysizehints.x, mysizehints.y,
-				mysizehints.width, mysizehints.height, borderwidth, fore_pix, back_pix);
-
-	/* Activate hints */
-	XSetWMNormalHints(DADisplay, win, &mysizehints);
-	classHint.res_name = wname;
-	classHint.res_class = wname;
-	XSetClassHint(DADisplay, win, &classHint);
-
-	XSelectInput(DADisplay, win, ButtonPressMask | ExposureMask | ButtonReleaseMask | PointerMotionMask | StructureNotifyMask);
-	XSelectInput(DADisplay, iconwin, ButtonPressMask | ExposureMask | ButtonReleaseMask | PointerMotionMask | StructureNotifyMask);
-
-	if (XStringListToTextProperty(&wname, 1, &name) == 0) {
-		fprintf(stderr, "%s: can't allocate window name\n", wname);
-		exit(1);
-	}
-
-	XSetWMName(DADisplay, win, &name);
+	/* TODO - use DASetCallbacks */
+	XSelectInput(DADisplay, DALeader, ButtonPressMask | ExposureMask | ButtonReleaseMask | PointerMotionMask | StructureNotifyMask);
+	XSelectInput(DADisplay, DAIcon, ButtonPressMask | ExposureMask | ButtonReleaseMask | PointerMotionMask | StructureNotifyMask);
 
 	/* Create GC for drawing */
+	/* TODO - use DAGC */
+	back_pix = GetColor("white");
+	fore_pix = GetColor("black");
 
 	gcm = GCForeground | GCBackground | GCGraphicsExposures;
 	gcv.foreground = fore_pix;
@@ -465,23 +437,12 @@ void openXwindow(int argc, char *argv[], char *pixmap_bytes[], char *pixmask_bit
 	NormalGC = XCreateGC(DADisplay, Root, gcm, &gcv);
 
 	/* ONLYSHAPE ON */
+	/* TODO - use DASetShapeWithOffsetForWindow */
+	pixmask = XCreateBitmapFromData(DADisplay, DALeader, pixmask_bits, pixmask_width, pixmask_height);
 
-	pixmask = XCreateBitmapFromData(DADisplay, win, pixmask_bits, pixmask_width, pixmask_height);
+	XShapeCombineMask(DADisplay, DALeader, ShapeBounding, 0, 0, pixmask, ShapeSet);
+	XShapeCombineMask(DADisplay, DAIcon, ShapeBounding, 0, 0, pixmask, ShapeSet);
 
-	XShapeCombineMask(DADisplay, win, ShapeBounding, 0, 0, pixmask, ShapeSet);
-	XShapeCombineMask(DADisplay, iconwin, ShapeBounding, 0, 0, pixmask, ShapeSet);
+	DAShow();
 
-	/* ONLYSHAPE OFF */
-
-	mywmhints.initial_state = WithdrawnState;
-	mywmhints.icon_window = iconwin;
-	mywmhints.icon_x = mysizehints.x;
-	mywmhints.icon_y = mysizehints.y;
-	mywmhints.window_group = win;
-	mywmhints.flags = StateHint | IconWindowHint | IconPositionHint | WindowGroupHint;
-
-	XSetWMHints(DADisplay, win, &mywmhints);
-
-	XSetCommand(DADisplay, win, argv, argc);
-	XMapWindow(DADisplay, win);
 }

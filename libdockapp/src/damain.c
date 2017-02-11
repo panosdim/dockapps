@@ -160,6 +160,9 @@ DACreateIcon(char *name, unsigned width, unsigned height, int argc, char **argv)
 	XSetClassHint(DADisplay, DALeader, classHint);
 	XFree(classHint);
 
+	/* Set WM_NAME */
+	XStoreName(DADisplay, DALeader, name);
+
 	/* Set WMHints */
 	wmHints = XAllocWMHints();
 	if (!wmHints)
