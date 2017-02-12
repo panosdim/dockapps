@@ -12,8 +12,11 @@ UNINSTALL_PROGRAM = rm -f
 CC = gcc
 OPTIMIZE = -O2
 XLIBDIR = /usr/X11R6/lib
-XLIB = -ldockapp -lXpm -lXext -lX11
-OBJ = wmfortune.o
+XLIB = -lXpm -lXext -lX11
+OBJ = wmfortune.o ../libdockapp/src/damain.o ../libdockapp/src/dacolor.o \
+	../libdockapp/src/dautil.o ../libdockapp/src/daargs.o \
+	../libdockapp/src/dapixmap.o ../libdockapp/src/daevent.o \
+	../libdockapp/src/dacallback.o
 
 $(DEST) : $(OBJ)
 	$(CC) $(OBJ) -L$(XLIBDIR) $(XLIB) -o $(DEST)
