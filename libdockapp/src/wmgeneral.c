@@ -60,6 +60,7 @@
 
 #define _POSIX_C_SOURCE 200809L
 #include "wmgeneral.h"
+#include <libgen.h>
 #include <X11/Xlib.h>                   /* for XCopyArea, etc */
 #include <X11/Xutil.h>                  /* for XSizeHints, XWMHints, etc */
 #include <X11/extensions/shape.h>       /* for XShapeCombineMask */
@@ -390,7 +391,7 @@ void setMaskXY(int x, int y) {
 void openXwindow(int argc, char *argv[], char *pixmap_bytes[], char *pixmask_bits, int pixmask_width, int pixmask_height) {
 
 	char			*display_name = NULL;
-	char			*wname = argv[0];
+	char *wname;
 
 	/* char			*geometry = NULL; */
 
@@ -415,6 +416,7 @@ void openXwindow(int argc, char *argv[], char *pixmap_bytes[], char *pixmask_bit
 
 	/* TODO - restore ability to specify position from geometry string */
 	/* using XWMGeometry */
+	wname = basename(argv[0]);
 	DACreateIcon(wname, 64, 64, argc, argv);
 
 	/* TODO - use DASetCallbacks */
