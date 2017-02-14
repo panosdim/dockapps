@@ -352,9 +352,7 @@ void copyXBMArea(int x, int y, int sx, int sy, int dx, int dy) {
 \*******************************************************************************/
 
 void setMaskXY(int x, int y) {
-
-	 XShapeCombineMask(DADisplay, DALeader, ShapeBounding, x, y, pixmask, ShapeSet);
-	 XShapeCombineMask(DADisplay, DAIcon, ShapeBounding, x, y, pixmask, ShapeSet);
+	DASetShapeWithOffset(pixmask, x, y);
 }
 
 /*******************************************************************************\
@@ -396,11 +394,8 @@ void openXwindow(int argc, char *argv[], char *pixmap_bytes[], char *pixmask_bit
 	XSelectInput(DADisplay, DAIcon, ButtonPressMask | ExposureMask | ButtonReleaseMask | PointerMotionMask | StructureNotifyMask);
 
 	/* ONLYSHAPE ON */
-	/* TODO - use DASetShapeWithOffsetForWindow */
 	pixmask = XCreateBitmapFromData(DADisplay, DALeader, pixmask_bits, pixmask_width, pixmask_height);
-
-	XShapeCombineMask(DADisplay, DALeader, ShapeBounding, 0, 0, pixmask, ShapeSet);
-	XShapeCombineMask(DADisplay, DAIcon, ShapeBounding, 0, 0, pixmask, ShapeSet);
+	setMaskXY(0,0);
 
 	DAShow();
 
