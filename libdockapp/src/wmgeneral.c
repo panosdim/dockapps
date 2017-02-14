@@ -102,7 +102,6 @@ MOUSE_REGION	mouse_region[MAX_MOUSE_REGION];
 /***********************/
 
 static void GetXPM(XpmIcon *, char **);
-static Pixel GetColor(char *);
 void RedrawWindow(void);
 void AddMouseRegion(int, int, int, int, int);
 int CheckMouseRegion(int, int);
@@ -196,26 +195,6 @@ static void GetXPM(XpmIcon *wmgen, char *pixmap_bytes[]) {
 			     &width, &height);
 	wmgen->attributes.width = width;
 	wmgen->attributes.height = height;
-}
-
-/*******************************************************************************\
-|* GetColor																	   *|
-\*******************************************************************************/
-
-static Pixel GetColor(char *name) {
-
-	XColor				color;
-	XWindowAttributes	attributes;
-
-	XGetWindowAttributes(DADisplay, Root, &attributes);
-
-	color.pixel = 0;
-	if (!XParseColor(DADisplay, attributes.colormap, name, &color)) {
-		fprintf(stderr, "wm.app: can't parse %s.\n", name);
-	} else if (!XAllocColor(DADisplay, attributes.colormap, &color)) {
-		fprintf(stderr, "wm.app: can't allocate %s.\n", name);
-	}
-	return color.pixel;
 }
 
 /*******************************************************************************\
