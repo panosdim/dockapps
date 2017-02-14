@@ -332,16 +332,16 @@ void wmtime_routine(int argc, char **argv) {
 
 		/* code based on GetColor() from wmgeneral.c */
 		/* we need a temporary display to parse the color */
-		display = XOpenDisplay(NULL);
-		screen = DefaultScreen(display);
-		Root = RootWindow(display, screen);
-		XGetWindowAttributes(display, Root, &attributes);
+		DADisplay = XOpenDisplay(NULL);
+		screen = DefaultScreen(DADisplay);
+		Root = RootWindow(DADisplay, screen);
+		XGetWindowAttributes(DADisplay, Root, &attributes);
 
 		col.pixel = 0;
-		if (!XParseColor(display, attributes.colormap, color, &col)) {
+		if (!XParseColor(DADisplay, attributes.colormap, color, &col)) {
 			fprintf(stderr, "wmtime: can't parse %s.\n", color);
 			goto draw_window;
-		} else if (!XAllocColor(display, attributes.colormap, &col)) {
+		} else if (!XAllocColor(DADisplay, attributes.colormap, &col)) {
 			fprintf(stderr, "wmtime: can't allocate %s.\n", color);
 			goto draw_window;
 		}
@@ -364,7 +364,7 @@ void wmtime_routine(int argc, char **argv) {
 		wmgen.attributes.numsymbols = NUMSYMBOLS;
 		wmgen.attributes.colorsymbols = user_color;
 
-		XCloseDisplay(display);
+		XCloseDisplay(DADisplay);
 	}
 
 draw_window:
@@ -411,14 +411,14 @@ draw_window:
 		}
 
 
-		while (XPending(display)) {
-			XNextEvent(display, &Event);
+		while (XPending(DADisplay)) {
+			XNextEvent(DADisplay, &Event);
 			switch (Event.type) {
 			case Expose:
 				RedrawWindow();
 				break;
 			case DestroyNotify:
-				XCloseDisplay(display);
+				XCloseDisplay(DADisplay);
 				exit(0);
 				break;
 			case ButtonPress:

@@ -2,7 +2,8 @@ LIBS   = -lXpm -lXext -lX11 -lm
 OBJS =	wmtime.o ../libdockapp/src/wmgeneral.o ../libdockapp/src/damain.o \
 	../libdockapp/src/misc.o ../libdockapp/src/dautil.o \
 	../libdockapp/src/dacolor.o ../libdockapp/src/list.o\
-	../libdockapp/src/daargs.o ../libdockapp/src/dapixmap.o
+	../libdockapp/src/daargs.o ../libdockapp/src/dapixmap.o \
+	../libdockapp/src/dashaped.o
 XPMS = wmtime-master.xpm wmtime-mask.xbm
 PREFIX = /usr/local
 BINDIR = $(PREFIX)/bin
