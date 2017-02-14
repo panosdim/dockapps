@@ -158,11 +158,12 @@ setGCs(DAShapedPixmap *dasp)
 	gcv.background = 0;
 	gcv.plane_mask = 1;
 
-	dasp->shapeGC = XCreateGC(
-		DADisplay,
-		dasp->shape,
-		GCGraphicsExposures|GCForeground|GCBackground|GCPlaneMask,
-		&gcv);
+	if (dasp->shape)
+		dasp->shapeGC = XCreateGC(
+			DADisplay,
+			dasp->shape,
+			GCGraphicsExposures|GCForeground|GCBackground|GCPlaneMask,
+			&gcv);
 
 }
 

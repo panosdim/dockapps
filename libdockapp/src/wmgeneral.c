@@ -80,8 +80,7 @@ int			screen;
 XSizeHints	mysizehints;
 XWMHints	mywmhints;
 Pixel		back_pix, fore_pix;
-XpmIcon		wmgen;
-Pixmap		pixmask;
+DAShapedPixmap  *dasp;
 
   /*****************/
  /* Mouse Regions */
@@ -101,7 +100,6 @@ MOUSE_REGION	mouse_region[MAX_MOUSE_REGION];
  /* Function Prototypes */
 /***********************/
 
-static void GetXPM(XpmIcon *, char **);
 void RedrawWindow(void);
 void AddMouseRegion(int, int, int, int, int);
 int CheckMouseRegion(int, int);
@@ -182,22 +180,6 @@ void parse_rcfile2(const char *filename, rckeys2 *keys) {
 
 
 /*******************************************************************************\
-|* GetXPM																	   *|
-\*******************************************************************************/
-
-static void GetXPM(XpmIcon *wmgen, char *pixmap_bytes[]) {
-
-	unsigned short width, height;
-
-	width = 64;
-	height = 64;
-	DAMakePixmapFromData(pixmap_bytes, &(wmgen->pixmap), &(wmgen->mask),
-			     &width, &height);
-	wmgen->attributes.width = width;
-	wmgen->attributes.height = height;
-}
-
-/*******************************************************************************\
 |* flush_expose																   *|
 \*******************************************************************************/
 
@@ -219,11 +201,11 @@ static int flush_expose(Window w) {
 void RedrawWindow(void) {
 
 	flush_expose(DAIcon);
-	XCopyArea(DADisplay, wmgen.pixmap, DAIcon, DAGC,
-				0,0, wmgen.attributes.width, wmgen.attributes.height, 0,0);
+	XCopyArea(DADisplay, dasp->pixmap, DAIcon, DAGC,
+				0,0, dasp->geometry.width, dasp->geometry.height, 0,0);
 	flush_expose(DALeader);
-	XCopyArea(DADisplay, wmgen.pixmap, DALeader, DAGC,
-				0,0, wmgen.attributes.width, wmgen.attributes.height, 0,0);
+	XCopyArea(DADisplay, dasp->pixmap, DALeader, DAGC,
+				0,0, dasp->geometry.width, dasp->geometry.height, 0,0);
 }
 
 /*******************************************************************************\
@@ -233,11 +215,11 @@ void RedrawWindow(void) {
 void RedrawWindowXY(int x, int y) {
 
 	flush_expose(DAIcon);
-	XCopyArea(DADisplay, wmgen.pixmap, DAIcon, DAGC,
-				x,y, wmgen.attributes.width, wmgen.attributes.height, 0,0);
+	XCopyArea(DADisplay, dasp->pixmap, DAIcon, DAGC,
+				x,y, dasp->geometry.width, dasp->geometry.height, 0,0);
 	flush_expose(DALeader);
-	XCopyArea(DADisplay, wmgen.pixmap, DALeader, DAGC,
-				x,y, wmgen.attributes.width, wmgen.attributes.height, 0,0);
+	XCopyArea(DADisplay, dasp->pixmap, DALeader, DAGC,
+				x,y, dasp->geometry.width, dasp->geometry.height, 0,0);
 }
 
 /*******************************************************************************\
@@ -333,7 +315,7 @@ void createXBMfromXPM(char *xbm, char **xpm, int sx, int sy) {
 
 void copyXPMArea(int x, int y, int sx, int sy, int dx, int dy) {
 
-	XCopyArea(DADisplay, wmgen.pixmap, wmgen.pixmap, DAGC, x, y, sx, sy, dx, dy);
+	XCopyArea(DADisplay, dasp->pixmap, dasp->pixmap, DAGC, x, y, sx, sy, dx, dy);
 
 }
 
@@ -343,7 +325,7 @@ void copyXPMArea(int x, int y, int sx, int sy, int dx, int dy) {
 
 void copyXBMArea(int x, int y, int sx, int sy, int dx, int dy) {
 
-	XCopyArea(DADisplay, wmgen.mask, wmgen.pixmap, DAGC, x, y, sx, sy, dx, dy);
+	XCopyArea(DADisplay, dasp->shape, dasp->pixmap, DAGC, x, y, sx, sy, dx, dy);
 }
 
 
@@ -352,7 +334,7 @@ void copyXBMArea(int x, int y, int sx, int sy, int dx, int dy) {
 \*******************************************************************************/
 
 void setMaskXY(int x, int y) {
-	DASetShapeWithOffset(pixmask, x, y);
+	DASetShapeWithOffset(dasp->shape, x, y);
 }
 
 /*******************************************************************************\
@@ -387,14 +369,14 @@ void openXwindow(int argc, char *argv[], char *pixmap_bytes[], char *pixmask_bit
 	DACreateIcon(wname, 64, 64, argc, argv);
 
 	/* Convert XPM to XImage */
-	GetXPM(&wmgen, pixmap_bytes);
+	dasp = DAMakeShapedPixmapFromData(pixmap_bytes);
 
 	/* TODO - use DASetCallbacks */
 	XSelectInput(DADisplay, DALeader, ButtonPressMask | ExposureMask | ButtonReleaseMask | PointerMotionMask | StructureNotifyMask);
 	XSelectInput(DADisplay, DAIcon, ButtonPressMask | ExposureMask | ButtonReleaseMask | PointerMotionMask | StructureNotifyMask);
 
 	/* ONLYSHAPE ON */
-	pixmask = XCreateBitmapFromData(DADisplay, DALeader, pixmask_bits, pixmask_width, pixmask_height);
+	dasp->shape = XCreateBitmapFromData(DADisplay, DALeader, pixmask_bits, pixmask_width, pixmask_height);
 	setMaskXY(0,0);
 
 	DAShow();
