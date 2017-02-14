@@ -100,7 +100,9 @@ DASPCopyArea(DAShapedPixmap *src, DAShapedPixmap *dst, int x1, int y1, int w, in
 {
 	assert(src != NULL && dst != NULL);
 
-	XCopyPlane(DADisplay, src->shape, dst->shape, src->shapeGC, x1, y1, w, h, x2, y2, 1);
+	if (src->shapeGC)
+		XCopyPlane(DADisplay, src->shape, dst->shape, src->shapeGC,
+			   x1, y1, w, h, x2, y2, 1);
 	XCopyArea(DADisplay, src->pixmap, dst->pixmap, src->drawGC, x1, y1, w, h, x2, y2);
 }
 

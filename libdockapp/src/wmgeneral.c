@@ -310,7 +310,7 @@ void createXBMfromXPM(char *xbm, char **xpm, int sx, int sy) {
 
 void copyXPMArea(int x, int y, int sx, int sy, int dx, int dy) {
 
-	XCopyArea(DADisplay, dasp->pixmap, dasp->pixmap, DAGC, x, y, sx, sy, dx, dy);
+	DASPCopyArea(dasp, dasp, x, y, sx, sy, dx, dy);
 
 }
 
