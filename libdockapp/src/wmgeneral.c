@@ -188,21 +188,14 @@ void parse_rcfile2(const char *filename, rckeys2 *keys) {
 
 static void GetXPM(XpmIcon *wmgen, char *pixmap_bytes[]) {
 
-	XWindowAttributes	attributes;
-	int					err;
+	unsigned short width, height;
 
-	/* For the colormap */
-	XGetWindowAttributes(DADisplay, Root, &attributes);
-
-	wmgen->attributes.valuemask |= (XpmReturnPixels | XpmReturnExtensions);
-
-	err = XpmCreatePixmapFromData(DADisplay, Root, pixmap_bytes, &(wmgen->pixmap),
-					&(wmgen->mask), &(wmgen->attributes));
-
-	if (err != XpmSuccess) {
-		fprintf(stderr, "Not enough free colorcells.\n");
-		exit(1);
-	}
+	width = 64;
+	height = 64;
+	DAMakePixmapFromData(pixmap_bytes, &(wmgen->pixmap), &(wmgen->mask),
+			     &width, &height);
+	wmgen->attributes.width = width;
+	wmgen->attributes.height = height;
 }
 
 /*******************************************************************************\
@@ -411,13 +404,13 @@ void openXwindow(int argc, char *argv[], char *pixmap_bytes[], char *pixmask_bit
 	screen  = DefaultScreen(DADisplay);
 	Root    = RootWindow(DADisplay, screen);
 
-	/* Convert XPM to XImage */
-	GetXPM(&wmgen, pixmap_bytes);
-
 	/* TODO - restore ability to specify position from geometry string */
 	/* using XWMGeometry */
 	wname = basename(argv[0]);
 	DACreateIcon(wname, 64, 64, argc, argv);
+
+	/* Convert XPM to XImage */
+	GetXPM(&wmgen, pixmap_bytes);
 
 	/* TODO - use DASetCallbacks */
 	XSelectInput(DADisplay, DALeader, ButtonPressMask | ExposureMask | ButtonReleaseMask | PointerMotionMask | StructureNotifyMask);
