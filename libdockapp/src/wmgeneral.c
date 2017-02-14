@@ -75,11 +75,6 @@
  /* X11 Variables */
 /*****************/
 
-Window		Root;
-int			screen;
-XSizeHints	mysizehints;
-XWMHints	mywmhints;
-Pixel		back_pix, fore_pix;
 DAShapedPixmap  *dasp;
 
   /*****************/
@@ -360,8 +355,6 @@ void openXwindow(int argc, char *argv[], char *pixmap_bytes[], char *pixmask_bit
 	DAStoreArguments(argc, argv);
 	DAOpenDisplay(display_name, argc, argv);
 	display = DADisplay; /* deprecated name */
-	screen  = DefaultScreen(DADisplay);
-	Root    = RootWindow(DADisplay, screen);
 
 	/* TODO - restore ability to specify position from geometry string */
 	/* using XWMGeometry */
