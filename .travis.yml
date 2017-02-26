@@ -6,4 +6,5 @@ script: cd libdockapp && autoreconf -i && ./configure && make install &&  cd .. 
 addons:
   apt:
     packages:
+    - libxpm-dev
     - libasound2-dev
