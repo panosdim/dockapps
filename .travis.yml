@@ -2,6 +2,7 @@ language: c
 compiler:
   - clang
   - gcc
+sudo: required
 script: cd libdockapp && autoreconf -i && ./configure && make install &&  cd .. && make
 addons:
   apt:
