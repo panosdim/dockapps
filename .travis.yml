@@ -2,8 +2,7 @@ language: c
 compiler:
   - clang
   - gcc
-script: cd libdockapp && autoreconf -i && ./configure && make install && \
-	cd .. && make
+script: cd libdockapp && autoreconf -i && ./configure && make install &&  cd .. && make
 addons:
   apt:
     packages:
