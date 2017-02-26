@@ -26,7 +26,10 @@ MAKE_DOCKAPPS = \
 	wmomikuzi \
 	wmppp.app \
 	wmsun \
-	wmsupermon
+	wmsupermon \
+	wmtime \
+	wmtunlo \
+	wmymail
 
 # dockapps which require `make -C src`
 MAKE_DOCKAPPS_LOWERCASE_SRC = \
@@ -36,14 +39,18 @@ MAKE_DOCKAPPS_LOWERCASE_SRC = \
 # dockapps which require `make -C Src`
 MAKE_DOCKAPPS_UPPERCASE_SRC = \
 	wmCalClock \
-	wmcalendar
+	wmcalendar \
+	wmWeather \
+	wmxss
 
 # dockapps which require `make -C wmfoo` (where 'wmfoo' is the dockapp's name)
 MAKE_DOCKAPPS_WMFOO = \
 	wmdonkeymon \
 	wmmon \
 	wmpop3 \
-	wmSMPmon
+	wmSMPmon \
+	wmtetris \
+	wmtz
 
 # dockapps which use autotools
 AUTOTOOLS_DOCKAPPS = \
@@ -63,7 +70,11 @@ AUTOTOOLS_DOCKAPPS = \
 	wmmemload \
 	wmmp3 \
 	wmpager \
-	wmshutdown
+	wmshutdown \
+	wmthemech \
+	wmtop \
+	wmtv \
+	wmwifi
 
 XMKMF_DOCKAPPS = \
 	wmnet
@@ -78,7 +89,9 @@ ALL_DOCKAPPS = $(MAKE_DOCKAPPS) \
 	wmnet \
 	wmpop3lb \
 	wmsm.app \
-	wmspaceweather
+	wmspaceweather \
+	wmswallow \
+	wmwork
 
 #todo:
 #  asbeats
@@ -94,6 +107,9 @@ ALL_DOCKAPPS = $(MAKE_DOCKAPPS) \
 #  wmpower
 #  wmradio
 #  wmsmixer
+#  wmtrash
+#  wmwebcam
+#  wmwlmon
 
 all: $(ALL_DOCKAPPS)
 
@@ -129,6 +145,12 @@ wmsm.app:
 
 wmspaceweather:
 	cd $@ && make -C wmSpaceWeather
+
+wmswallow:
+	cd $@ && make xfree
+
+wmwork:
+	cd $@/src && autoreconf -i && ./configure && make
 
 clean:
 	git clean -fxd
