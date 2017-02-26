@@ -2,9 +2,9 @@ language: c
 compiler:
   - clang
   - gcc
-script: make
+script: cd libdockapp && autoreconf -i && ./configure && make install && \
+	cd .. && make
 addons:
   apt:
     packages:
-    - libdockapp-dev
     - libasound2-dev
